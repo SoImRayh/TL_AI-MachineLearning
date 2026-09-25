@@ -12,8 +12,6 @@ __pycache__/
 
 # Data and generated artifacts
 # Keep directory structure while ignoring potentially large/local files.
-datasets/*
-!datasets/.gitkeep
 images/*
 !images/.gitkeep
 
