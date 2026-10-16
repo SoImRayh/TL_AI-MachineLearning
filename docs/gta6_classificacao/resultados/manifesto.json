@@ -1,0 +1,87 @@
+{
+  "dataset": "datasets/gta6_fan_expectations_2026.csv",
+  "dataset_sha256": "df35a489479977f3cf43c938b39730559c37765692b36786a526e19540823604",
+  "shape": [
+    6000,
+    20
+  ],
+  "target": "hype_score_1to10",
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "genuine_unstructured_text": false,
+  "full_assignment_compliance": false,
+  "split_sizes": {
+    "train": 3600,
+    "validation": 1200,
+    "test": 1200
+  },
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "fractions": [
+    0.1,
+    0.3,
+    0.6,
+    0.9,
+    1.0
+  ],
+  "epochs": 160,
+  "tree_depth_limit": 12,
+  "configurations": 81,
+  "learning_plots": [
+    "curva_1_lr.png",
+    "curva_2_lr.png",
+    "curva_3_lr.png",
+    "curva_4_lr.png",
+    "curva_5_ad.png"
+  ],
+  "selected_model_ids": [
+    "curva_lr|LR sem regularizacao|seed=42|fraction=1.0|depth=None",
+    "curva_lr|LR Elastic Net|seed=42|fraction=1.0|depth=None",
+    "curva_ad|AD propria|seed=42|fraction=1.0|depth=8"
+  ],
+  "selection_uses_test": false,
+  "features": [
+    "age",
+    "gender",
+    "region",
+    "primary_platform",
+    "favorite_previous_gta",
+    "years_following_gta6",
+    "primary_info_source",
+    "trailer1_times_watched",
+    "most_anticipated_feature",
+    "confidence_rockstar_delivers_1to5",
+    "preorder_intent",
+    "willingness_to_pay_usd",
+    "expected_firstweek_hours",
+    "expects_release_delay",
+    "worried_about_price",
+    "follows_rockstar_socials",
+    "hype_change_vs_6mo_ago",
+    "overall_sentiment"
+  ],
+  "rare_class_policy": "um registro por classe com menos de tres exemplos no treino; restante no teste",
+  "validation_missing_classes": [
+    1
+  ],
+  "versions": {
+    "python": "3.14.4",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit_learn": "1.9.0",
+    "scipy": "1.18.1"
+  }
+}
