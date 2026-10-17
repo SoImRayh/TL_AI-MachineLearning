@@ -1,63 +1,73 @@
 # Resultados da execução — GTA VI
 
-## Aderência
-Adaptação ao CSV: 6000 registros e 10 classes nativas de hype_score_1to10 (notas de 1 a 10). NÃO há texto livre; TF-IDF aplicado às dez descrições categóricas de most_anticipated_feature. overall_sentiment possui três classes, não cinco. Aprovação do professor ou dados textuais reais ainda são necessários para aderência literal. A nota 1 tem dois registros: um no treino e outro no teste, sem suporte na validação. F1 macro considera todas as dez classes.
+## Configuração
+6000 registros; alvo classe_hype com 5 classes (Baixo: notas 1–6, Alto: nota 7, Muito alto: nota 8, Altíssimo: nota 9, Máximo: nota 10). Removidos de X: respondent_id (identificador), overall_sentiment (derivado da nota) e hype_score_1to10.
 
-## Protocolo
-Treino=3600; validação=1200; teste=1200. Sementes=[42, 43, 44]; épocas SGD=160; altura limite AD=12. 81 configurações avaliadas; cinco curvas; três matrizes de confusão.
+Treino=3600; validação=1200; teste=1200. Sementes=[42, 43, 44]; épocas SGD=160; alpha escolhido: {'LR sem regularizacao': 0.0, 'LR Elastic Net': 0.0001, 'LR Lasso': 1e-05, 'LR Ridge': 0.0001}; profundidade AD escolhida=5 (limite 12). 81 configurações avaliadas no teste.
 
-Consistência: 1.080, 2.160 e 3.240 registros; três repetições por algoritmo/tamanho. Subconjuntos aninhados, pré-processamento ajustado em cada subconjunto, teste fora da seleção.
+## Busca de alpha (validação, F1 macro)
+| familia        |   alpha |   treino_f1_macro |   validacao_f1_macro |   coeficientes_zero_pct |
+|:---------------|--------:|------------------:|---------------------:|------------------------:|
+| LR Ridge       |  1e-05  |            0.4019 |               0.3614 |                       0 |
+| LR Ridge       |  0.0001 |            0.4001 |               0.3619 |                       0 |
+| LR Ridge       |  0.001  |            0.3974 |               0.3571 |                       0 |
+| LR Ridge       |  0.01   |            0.3723 |               0.3397 |                       0 |
+| LR Ridge       |  0.1    |            0.2751 |               0.2649 |                       0 |
+| LR Lasso       |  1e-05  |            0.4001 |               0.363  |                       0 |
+| LR Lasso       |  0.0001 |            0.3996 |               0.3602 |                       0 |
+| LR Lasso       |  0.001  |            0.3814 |               0.3482 |                       0 |
+| LR Lasso       |  0.01   |            0.327  |               0.3229 |                       0 |
+| LR Lasso       |  0.1    |            0.272  |               0.2856 |                       0 |
+| LR Elastic Net |  1e-05  |            0.4006 |               0.3614 |                       0 |
+| LR Elastic Net |  0.0001 |            0.4003 |               0.3635 |                       0 |
+| LR Elastic Net |  0.001  |            0.391  |               0.3593 |                       0 |
+| LR Elastic Net |  0.01   |            0.3439 |               0.3329 |                       0 |
+| LR Elastic Net |  0.1    |            0.2522 |               0.2616 |                       0 |
 
-## Métricas dos três modelos selecionados
+## Métricas dos três modelos selecionados (teste)
 |Modelo|Precision macro|Recall macro|F1 micro|F1 macro|Gap treino-validação|
 |---|---:|---:|---:|---:|---:|
-|curva_lr&#124;LR sem regularizacao&#124;seed=42&#124;fraction=1.0&#124;depth=None|0.3490|0.3808|0.5225|0.3474|0.0427|
-|curva_lr&#124;LR Elastic Net&#124;seed=42&#124;fraction=1.0&#124;depth=None|0.3594|0.3848|0.5333|0.3508|0.0299|
-|curva_ad&#124;AD propria&#124;seed=42&#124;fraction=1.0&#124;depth=8|0.3854|0.3980|0.4867|0.3876|0.1339|
+|curva_lr&#124;LR sem regularizacao&#124;seed=42&#124;fraction=1.0&#124;depth=None|0.3337|0.3956|0.4425|0.3395|0.0404|
+|curva_lr&#124;LR Elastic Net&#124;seed=42&#124;fraction=1.0&#124;depth=None|0.3289|0.3945|0.4417|0.3370|0.0368|
+|curva_ad&#124;AD propria&#124;seed=42&#124;fraction=1.0&#124;depth=5|0.4198|0.4180|0.4400|0.4159|0.0384|
 
-Baseline majoritário: F1 micro=0.2208; F1 macro=0.0362.
+Baseline majoritário: F1 micro=0.2408; F1 macro=0.0776.
 
-## Interpretação das curvas
-- LR sem regularizacao: validação média F1 macro de 0.2701 (360 exemplos) para 0.3378 (3.600), diferença +0.0677.
-- LR Ridge: validação média F1 macro de 0.2690 (360 exemplos) para 0.3384 (3.600), diferença +0.0694.
-- LR Lasso: validação média F1 macro de 0.2712 (360 exemplos) para 0.3376 (3.600), diferença +0.0664.
-- LR Elastic Net: validação média F1 macro de 0.2703 (360 exemplos) para 0.3409 (3.600), diferença +0.0706.
-- AD: F1 macro de treino 0.1132 → 0.5484; validação 0.1132 → 0.3300 entre profundidades 1 e 12. Comparar com a profundidade selecionada, não escolher pela maior altura.
+## Curvas
+- LR sem regularizacao: validação F1 macro 0.3580 (360 exemplos) → 0.3622 (3600); gap final 0.0391.
+- LR Ridge: validação F1 macro 0.3581 (360 exemplos) → 0.3623 (3600); gap final 0.0380.
+- LR Lasso: validação F1 macro 0.3583 (360 exemplos) → 0.3627 (3600); gap final 0.0378.
+- LR Elastic Net: validação F1 macro 0.3572 (360 exemplos) → 0.3638 (3600); gap final 0.0363.
+- AD: treino 0.2180 → 0.6168; validação 0.2130 → 0.3859 (profundidade 1 → 12); melhor validação na profundidade 5.
 
 ## Consistência
-familia,fracao_treino,n_treino,treino_media,validacao_media,validacao_desvio,validacao_min,validacao_max,gap_medio
-AD propria,0.3,1080,0.5278515541690827,0.35631033790074684,0.011490171661578895,0.34315322160239564,0.3643693563993734,0.17154121626833585
-AD propria,0.6,2160,0.5180187941496192,0.37131812219168564,0.019415415931016932,0.3525447844131432,0.39131750596754217,0.14670067195793363
-AD propria,0.9,3240,0.49636713454646325,0.3693698063063042,0.007340290645670081,0.36220976658028253,0.37687796059983736,0.12699732824015905
-LR Ridge,0.3,1080,0.4060720731301826,0.32453290560583087,0.00573757415245602,0.31809696150045497,0.32911239326962627,0.08153916752435177
-LR Ridge,0.6,2160,0.3920722171723096,0.3335178669335351,0.003377426369711347,0.3298493174796918,0.3364981423416743,0.05855435023877446
-LR Ridge,0.9,3240,0.38408419931558674,0.3378226064047692,0.006007149029651485,0.3315788358405064,0.34356123323318993,0.046261592910817495
-
-O desvio apresentado é entre três amostragens do mesmo holdout, não intervalo de confiança nem prova de significância.
+| familia    |   fracao_treino |   n_treino |   treino_media |   validacao_media |   validacao_desvio |   validacao_min |   validacao_max |   gap_medio |
+|:-----------|----------------:|-----------:|---------------:|------------------:|-------------------:|----------------:|----------------:|------------:|
+| AD propria |             0.3 |       1080 |         0.464  |            0.3754 |             0.0275 |          0.3582 |          0.4071 |      0.0886 |
+| AD propria |             0.6 |       2160 |         0.4336 |            0.3648 |             0.0231 |          0.3492 |          0.3914 |      0.0688 |
+| AD propria |             0.9 |       3240 |         0.4594 |            0.4136 |             0.0076 |          0.4049 |          0.4189 |      0.0459 |
+| LR Ridge   |             0.3 |       1080 |         0.4469 |            0.3638 |             0.0174 |          0.3463 |          0.3811 |      0.0831 |
+| LR Ridge   |             0.6 |       2160 |         0.4186 |            0.3593 |             0.0058 |          0.3528 |          0.3639 |      0.0593 |
+| LR Ridge   |             0.9 |       3240 |         0.4044 |            0.3654 |             0.0074 |          0.361  |          0.374  |      0.039  |
 
 ## Erros dos selecionados
 ### curva_lr|LR sem regularizacao|seed=42|fraction=1.0|depth=None
-Confusões principais: 9 → 10: 97; 9 → 8: 95; 6 → 7: 91
-Recall por classe: 1=0.0000; 2=0.0000; 3=0.0000; 4=1.0000; 5=0.2500; 6=0.3087; 7=0.8195; 8=0.6709; 9=0.0680; 10=0.6906
+Confusões principais: Altíssimo → Máximo: 111; Alto → Baixo: 111; Muito alto → Máximo: 87
+Recall por classe: Baixo=0.8754; Alto=0.0390; Muito alto=0.2393; Altíssimo=0.0773; Máximo=0.7472
 
 ### curva_lr|LR Elastic Net|seed=42|fraction=1.0|depth=None
-Confusões principais: 9 → 10: 94; 9 → 8: 93; 6 → 7: 93
-Recall por classe: 1=0.0000; 2=0.0000; 3=0.0000; 4=1.0000; 5=0.2262; 6=0.2953; 7=0.8537; 8=0.6709; 9=0.0922; 10=0.7094
+Confusões principais: Alto → Baixo: 112; Altíssimo → Máximo: 111; Muito alto → Máximo: 87
+Recall por classe: Baixo=0.8754; Alto=0.0341; Muito alto=0.2308; Altíssimo=0.0773; Máximo=0.7547
 
-### curva_ad|AD propria|seed=42|fraction=1.0|depth=8
-Confusões principais: 9 → 8: 77; 9 → 10: 74; 7 → 6: 68
-Recall por classe: 1=0.0000; 2=0.0000; 3=0.5714; 4=0.6842; 5=0.2976; 6=0.4094; 7=0.6000; 8=0.6111; 9=0.2670; 10=0.5396
-
-## Conclusão
-Os números acima medem associação contemporânea das respostas com a nota de hype. Não demonstram análise de sentimento em texto livre. Acurácia/micro F1 devem ser lidos com macro F1 e recalls; a classe majoritária pode dominar. Regularização e mais amostras não garantem melhora. Os escores de teste não foram usados para selecionar os três modelos.
+### curva_ad|AD propria|seed=42|fraction=1.0|depth=5
+Confusões principais: Altíssimo → Muito alto: 72; Alto → Baixo: 70; Máximo → Altíssimo: 69
+Recall por classe: Baixo=0.6886; Alto=0.2732; Muito alto=0.4145; Altíssimo=0.2271; Máximo=0.4868
 
 ## Reprodutibilidade
 {
-  "python": "3.14.4",
-  "numpy": "2.5.2",
-  "pandas": "3.0.5",
-  "scikit_learn": "1.9.0",
-  "scipy": "1.18.1"
+  "python": "3.13.9",
+  "numpy": "2.4.1",
+  "pandas": "2.3.3",
+  "scikit_learn": "1.8.0",
+  "scipy": "1.17.0"
 }
-
-Consultar README.md da documentação para execução, método, artefatos e pendências de aderência.

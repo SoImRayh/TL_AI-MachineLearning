@@ -1,25 +1,39 @@
 {
-  "dataset": "datasets/gta6_fan_expectations_2026.csv",
+  "dataset": "datasets\\gta6_fan_expectations_2026.csv",
   "dataset_sha256": "df35a489479977f3cf43c938b39730559c37765692b36786a526e19540823604",
-  "shape": [
+  "shape_sem_id": [
     6000,
     20
   ],
-  "target": "hype_score_1to10",
-  "classes": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10
+  "target": "classe_hype",
+  "faixas": {
+    "Baixo": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "Alto": [
+      7
+    ],
+    "Muito alto": [
+      8
+    ],
+    "Altíssimo": [
+      9
+    ],
+    "Máximo": [
+      10
+    ]
+  },
+  "removidos_de_X": [
+    "classe_hype",
+    "hype_score_1to10",
+    "overall_sentiment",
+    "respondent_id"
   ],
-  "genuine_unstructured_text": false,
-  "full_assignment_compliance": false,
   "split_sizes": {
     "train": 3600,
     "validation": 1200,
@@ -38,6 +52,20 @@
     1.0
   ],
   "epochs": 160,
+  "alphas_testados": [
+    1e-05,
+    0.0001,
+    0.001,
+    0.01,
+    0.1
+  ],
+  "alpha_escolhido": {
+    "LR sem regularizacao": 0.0,
+    "LR Elastic Net": 0.0001,
+    "LR Lasso": 1e-05,
+    "LR Ridge": 0.0001
+  },
+  "profundidade_escolhida": 5,
   "tree_depth_limit": 12,
   "configurations": 81,
   "learning_plots": [
@@ -50,7 +78,7 @@
   "selected_model_ids": [
     "curva_lr|LR sem regularizacao|seed=42|fraction=1.0|depth=None",
     "curva_lr|LR Elastic Net|seed=42|fraction=1.0|depth=None",
-    "curva_ad|AD propria|seed=42|fraction=1.0|depth=8"
+    "curva_ad|AD propria|seed=42|fraction=1.0|depth=5"
   ],
   "selection_uses_test": false,
   "features": [
@@ -70,18 +98,13 @@
     "expects_release_delay",
     "worried_about_price",
     "follows_rockstar_socials",
-    "hype_change_vs_6mo_ago",
-    "overall_sentiment"
-  ],
-  "rare_class_policy": "um registro por classe com menos de tres exemplos no treino; restante no teste",
-  "validation_missing_classes": [
-    1
+    "hype_change_vs_6mo_ago"
   ],
   "versions": {
-    "python": "3.14.4",
-    "numpy": "2.5.2",
-    "pandas": "3.0.5",
-    "scikit_learn": "1.9.0",
-    "scipy": "1.18.1"
+    "python": "3.13.9",
+    "numpy": "2.4.1",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.8.0",
+    "scipy": "1.17.0"
   }
 }
